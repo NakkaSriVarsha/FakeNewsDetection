@@ -3,7 +3,7 @@ from PIL import Image
 import streamlit as st
 import pandas as pd
 import requests
-from bs4 import BeautifulSoup
+import BeautifulSoup from bs4
 from selenium import webdriver
 from sklearn.model_selection import train_test_split
 import re
