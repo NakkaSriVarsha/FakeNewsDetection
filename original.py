@@ -84,7 +84,7 @@ def extract_url(sentence):
     match = re.search(url_pattern, sentence)
     words = re.findall(url_pattern,sentence)
     print("words",words)
-    url = words[0]
+    url = words[-1]
     text = sentence[:match.start()].strip()
     return url, text
 
