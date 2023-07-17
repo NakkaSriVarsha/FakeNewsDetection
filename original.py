@@ -1,6 +1,5 @@
 import numpy as np
 from PIL import Image
-import imageio
 import streamlit as st
 import pandas as pd
 import requests
