@@ -126,7 +126,7 @@ def scraper(Title):
     else:
         return "Irrelavant"
     print(news1,news2,news3)
-    if ((news1>0.5 and news2>0.5) and news3>0.3) or (news1>0.3 and (news2>0.5 and news3>0.5)) or ((news1>0.5 and news1>0.5) and news2>0.3):
+    if ((news1>0.6 and news2>0.6) and news3>0.3) or (news1>0.3 and (news2>0.6 and news3>0.6)) or ((news1>0.6 and news1>0.6) and news2>0.3):
         return "Real News"
     elif news1>0.1 and news2>0.1 and news3>0.1:
         return "Fake News"
