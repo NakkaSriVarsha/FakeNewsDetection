@@ -178,7 +178,7 @@ def extract_instagram_captions(post_url: str) -> str:
         a = caption.split('\"')
         print(a)
         return a[-2]
-    except requests.exceptions.MissingSchema:
+    except MissingSchema:
         corrected_url = 'https://' + post_url
         return extract_instagram_captions(corrected_url)
     
