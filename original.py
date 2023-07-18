@@ -178,9 +178,9 @@ def extract_instagram_captions(post_url):
         a = caption.split('\"')
         print(a)
         return a[-2]
-    else:
-        corrected_url = 'https://' + post_url
-        return extract_instagram_captions(corrected_url)
+    # else:
+    #     corrected_url = 'https://' + post_url
+    #     return extract_instagram_captions(corrected_url)
     
 def extract_headline(url):
     response = requests.get(url)
@@ -234,6 +234,8 @@ if submit_button:
     print("pic:", pic)
     print("url", url)
     print("submitted")
+    if not url.startswith('http://') and not url.startswith('https://'):
+        url = 'https://' + url
     # if news_message(Title) == True and Title:
     if Title!="":
         if pic == None:
