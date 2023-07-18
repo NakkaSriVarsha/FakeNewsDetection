@@ -169,7 +169,7 @@ def text(image_url):
     else:
         return None
 
-def extract_instagram_captions(post_url: str) -> str:
+def extract_instagram_captions(post_url):
     if post_url.startswith('http://') or post_url.startswith('https://'):
         response = requests.get(post_url)
         soup = BeautifulSoup(response.text, 'html.parser')
