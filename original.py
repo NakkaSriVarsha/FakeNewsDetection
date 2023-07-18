@@ -17,7 +17,7 @@ from sklearn.metrics import accuracy_score
 import easyocr
 import io
 from PIL import Image
-from requests.exceptions import MissingSchema
+# from requests.exceptions import MissingSchema
 import spacy
 from scipy.spatial.distance import cosine
 nlp = spacy.load('en_core_web_md')
