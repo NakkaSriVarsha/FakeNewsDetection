@@ -273,10 +273,7 @@ def realnews_url(title):
         return "Not Found"
     
 st.title("FAKE NEWS DETECTOR")
-st.write("""Instructions:\n1. There are 4 formats to give the input - Title only,URL only,Title and URL only, Image only.\n
-              2. Please ensure not to give any other forms of input.\n
-              3. Make sure the content in Image or URL or Title are in English only.
-              """)
+st.write("""Instructions:\n1. There are 4 formats to give the input - Title only, URL only, Title and URL only, Image only.\n2. Please ensure not to give any other forms of input.\n3. Make sure the content in Image or URL or Title are in English only.""")
 with st.form("my_form"):
     pic = st.file_uploader("Upload an image", type=['jpg', 'jpeg', 'png'])
     Title = st.text_input("Enter title", disabled=False)
