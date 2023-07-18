@@ -181,13 +181,44 @@ def text(image_url):
         return None
 
 def extract_instagram_captions(post_url):
-    response = requests.get(post_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    caption_element = soup.select_one('meta[property="og:description"]')
-    caption = caption_element['content'] if caption_element else ''
-    a = caption.split('\"')
-    print(a)
-    return a[-2]
+    # response = requests.get(post_url)
+    # soup = BeautifulSoup(response.text, 'html.parser')
+    # caption_element = soup.select_one('meta[property="og:description"]')
+    # caption = caption_element['content'] if caption_element else ''
+    # a = caption.split('\"')
+    # print(a)
+    # return a[-2]
+    try:
+        # Check if the URL starts with "http://" or "https://"
+        if not url.startswith("http://") and not url.startswith("https://"):
+            # If not, add "https://" as the default schema
+            url = "https://" + url
+        
+        # Check if the URL is None
+
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        caption_element = soup.select_one('meta[property="og:description"]')
+        caption = caption_element['content'] if caption_element else ''
+        a = caption.split('\"')
+        print(a)
+        return a[-2]  # Check if the response has an HTTP error status
+
+        # Your scraping code here...
+
+    except requests.exceptions.HTTPError as e:
+        print(f"HTTP error: {e}")
+    except requests.exceptions.MissingSchema as e:
+        print(f"Invalid URL: {url}")
+    except requests.exceptions.ConnectionError as e:
+        print(f"Connection error: {e}")
+    except ValueError as e:
+        print("URL is None")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+    
     # if not post_url.startswith('http://') and not post_url.startswith('https://'):
     #     corrected_url = 'https://' + post_url
     #     return extract_instagram_captions(corrected_url)
@@ -263,11 +294,14 @@ if submit_button:
                     if "instagram.com" in a:
                         w = extract_instagram_captions(a)
                         print(w)
-                        if are_sentences_similar(w, b):
-                            result = scraper(b)
-                            heading = b
+                        if w==None:
+                            result= "Invalid URL"
                         else:
-                            result = "Content in Title and the Url doesn't match"
+                            if are_sentences_similar(w, b):
+                                result = scraper(b)
+                                heading = b
+                            else:
+                                result = "Content in Title and the Url doesn't match"
                     else:
                         print("extracting headline")
                         headline = extract_headline(a)
