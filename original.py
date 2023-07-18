@@ -180,44 +180,53 @@ def text(image_url):
     else:
         return None
 
-def extract_instagram_captions(post_url):
-    # response = requests.get(post_url)
-    # soup = BeautifulSoup(response.text, 'html.parser')
-    # caption_element = soup.select_one('meta[property="og:description"]')
-    # caption = caption_element['content'] if caption_element else ''
-    # a = caption.split('\"')
-    # print(a)
-    # return a[-2]
-    try:
-        # Check if the URL starts with "http://" or "https://"
-        if not url.startswith("http://") and not url.startswith("https://"):
-            # If not, add "https://" as the default schema
-            url = "https://" + url
+# def extract_instagram_captions(post_url):
+#     # response = requests.get(post_url)
+#     # soup = BeautifulSoup(response.text, 'html.parser')
+#     # caption_element = soup.select_one('meta[property="og:description"]')
+#     # caption = caption_element['content'] if caption_element else ''
+#     # a = caption.split('\"')
+#     # print(a)
+#     # return a[-2]
+#     try:
+#         # Check if the URL starts with "http://" or "https://"
+#         if not url.startswith("http://") and not url.startswith("https://"):
+#             # If not, add "https://" as the default schema
+#             url = "https://" + url
         
-        # Check if the URL is None
+#         # Check if the URL is None
 
-        response = requests.get(url)
+#         response = requests.get(url)
+#         soup = BeautifulSoup(response.text, 'html.parser')
+#         caption_element = soup.select_one('meta[property="og:description"]')
+#         caption = caption_element['content'] if caption_element else ''
+#         a = caption.split('\"')
+#         print(a)
+#         return a[-2]  # Check if the response has an HTTP error status
+
+#         # Your scraping code here...
+
+#     except requests.exceptions.HTTPError as e:
+#         print(f"HTTP error: {e}")
+#     except requests.exceptions.MissingSchema as e:
+#         print(f"Invalid URL: {url}")
+#     except requests.exceptions.ConnectionError as e:
+#         print(f"Connection error: {e}")
+#     except ValueError as e:
+#         print("URL is None")
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+
+def scrape_instagram_caption(post_url: str) -> str:
+    try:
+        response = requests.get(post_url)
         soup = BeautifulSoup(response.text, 'html.parser')
         caption_element = soup.select_one('meta[property="og:description"]')
         caption = caption_element['content'] if caption_element else ''
-        a = caption.split('\"')
-        print(a)
-        return a[-2]  # Check if the response has an HTTP error status
-
-        # Your scraping code here...
-
-    except requests.exceptions.HTTPError as e:
-        print(f"HTTP error: {e}")
-    except requests.exceptions.MissingSchema as e:
-        print(f"Invalid URL: {url}")
-    except requests.exceptions.ConnectionError as e:
-        print(f"Connection error: {e}")
-    except ValueError as e:
-        print("URL is None")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
-
+        return caption
+    except MissingSchema:
+        corrected_url = 'https://' + post_url
+        return scrape_instagram_caption(corrected_url)
     
     # if not post_url.startswith('http://') and not post_url.startswith('https://'):
     #     corrected_url = 'https://' + post_url
@@ -359,7 +368,10 @@ if submit_button:
             print("used scraper 7")
     elif pic != None:
         heading = text_extraction(pic)
-        result = scraper(heading)
+        if heading==None:
+            result="No text in the image"
+        else:
+            result = scraper(heading)
     elif is_valid_url(url)==False:
         result="Invalid URL"
     else:
