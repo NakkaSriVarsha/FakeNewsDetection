@@ -217,7 +217,7 @@ def text(image_url):
 #     except Exception as e:
 #         print(f"An error occurred: {e}")
 
-def scrape_instagram_caption(post_url: str) -> str:
+def extract_instagram_captions(post_url: str) -> str:
     try:
         response = requests.get(post_url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -226,7 +226,7 @@ def scrape_instagram_caption(post_url: str) -> str:
         return caption
     except MissingSchema:
         corrected_url = 'https://' + post_url
-        return scrape_instagram_caption(corrected_url)
+        return extract_instagram_captions(corrected_url)
     
     # if not post_url.startswith('http://') and not post_url.startswith('https://'):
     #     corrected_url = 'https://' + post_url
@@ -285,7 +285,7 @@ if submit_button:
     print("url", url)
     print("submitted")
     # if news_message(Title) == True and Title:
-    if not url.startswith('http://') and not url.startswith('https://'):
+    if not url.startswith('http://') and not url.startswith('https://') and url != "":
         url = 'https://' + url
         
     if is_valid_url(url):
