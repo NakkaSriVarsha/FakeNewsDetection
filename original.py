@@ -307,7 +307,7 @@ if submit_button:
                         if w==None:
                             result= "Invalid URL"
                         else:
-                            if are_sentences_similar(w, b):
+                            if are_sentences_similar(w, b)>0.8:
                                 result = scraper(b)
                                 heading = b
                             else:
@@ -317,7 +317,7 @@ if submit_button:
                         headline = extract_headline(a)
                         print(headline)
                         print("extracted headline")
-                        if are_sentences_similar(headline, b):
+                        if are_sentences_similar(headline, b)>0.8:
                             result = scraper(b)
                             heading = b
                         else:
@@ -334,7 +334,7 @@ if submit_button:
                     if "instagram.com" in url:
                         w = extract_instagram_captions(url)
                         print(w)
-                        if are_sentences_similar(w, Title):
+                        if are_sentences_similar(w, Title)>0.8:
                             result = scraper(Title)
                             heading = Title
                         else:
@@ -343,7 +343,7 @@ if submit_button:
                         print("extracting headline")
                         headline = extract_headline(url)
                         print("extracted headline")
-                        if are_sentences_similar(headline, Title):
+                        if are_sentences_similar(headline, Title)>0.8:
                             result = scraper(Title)
                             heading = Title
                         else:
