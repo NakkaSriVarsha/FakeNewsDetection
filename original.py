@@ -170,7 +170,7 @@ def text(image_url):
         return None
 
 def extract_instagram_captions(post_url: str) -> str:
-    try:
+    if post_url.startswith('http://') or post_url.startswith('https://'):
         response = requests.get(post_url)
         soup = BeautifulSoup(response.text, 'html.parser')
         caption_element = soup.select_one('meta[property="og:description"]')
@@ -178,7 +178,7 @@ def extract_instagram_captions(post_url: str) -> str:
         a = caption.split('\"')
         print(a)
         return a[-2]
-    except MissingSchema:
+    else:
         corrected_url = 'https://' + post_url
         return extract_instagram_captions(corrected_url)
     
