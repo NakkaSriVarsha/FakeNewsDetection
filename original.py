@@ -1,9 +1,11 @@
 import numpy as np
 from PIL import Image
+import imageio
 import streamlit as st
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from sklearn.model_selection import train_test_split
 import re
 import string
@@ -79,6 +81,16 @@ spreadsheet_url= 'https://docs.google.com/spreadsheets/d/1DoRSy7XixePfmV7_fwZ6pO
 spreadsheet = client.open_by_url(spreadsheet_url)
 worksheet = spreadsheet.get_worksheet(0)
 
+def is_valid_url(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an exception for 4xx or 5xx status codes
+        return True
+    except requests.exceptions.RequestException:
+        return False
+
+
+
 def extract_url(sentence):
     url_pattern = r'[https?://|www\.]\S+'
     match = re.search(url_pattern, sentence)
@@ -126,7 +138,7 @@ def scraper(Title):
     else:
         return "Irrelavant"
     print(news1,news2,news3)
-    if ((news1>0.6 and news2>0.6) and news3>0.3) or (news1>0.3 and (news2>0.6 and news3>0.6)) or ((news1>0.6 and news1>0.6) and news2>0.3):
+    if ((news1>0.5 and news2>0.5) and news3>0.3) or (news1>0.3 and (news2>0.5 and news3>0.5)) or ((news1>0.5 and news1>0.5) and news2>0.3):
         return "Real News"
     elif news1>0.1 and news2>0.1 and news3>0.1:
         return "Fake News"
@@ -178,7 +190,7 @@ def extract_instagram_captions(post_url):
         a = caption.split('\"')
         print(a)
         return a[-2]
-    # else:
+    # if not post_url.startswith('http://') and not post_url.startswith('https://'):
     #     corrected_url = 'https://' + post_url
     #     return extract_instagram_captions(corrected_url)
     
@@ -234,9 +246,16 @@ if submit_button:
     print("pic:", pic)
     print("url", url)
     print("submitted")
+    # if news_message(Title) == True and Title:
     if not url.startswith('http://') and not url.startswith('https://'):
         url = 'https://' + url
-    # if news_message(Title) == True and Title:
+        
+    if is_valid_url(url):
+        print("The URL is valid and accessible.")
+    else:
+        print("The URL is not valid or not accessible.")
+
+    
     if Title!="":
         if pic == None:
             if url == "":
@@ -254,6 +273,7 @@ if submit_button:
                     else:
                         print("extracting headline")
                         headline = extract_headline(a)
+                        print(headline)
                         print("extracted headline")
                         if are_sentences_similar(headline, b):
                             result = scraper(b)
@@ -267,25 +287,28 @@ if submit_button:
                 # st.write('Result: ',result)
                 print("used scraper 1")
             else:
-                print("")
-                if "instagram.com" in url:
-                    w = extract_instagram_captions(url)
-                    print(w)
-                    if are_sentences_similar(w, Title):
-                        result = scraper(Title)
-                        heading = Title
+                if is_valid_url(url):
+                    print("")
+                    if "instagram.com" in url:
+                        w = extract_instagram_captions(url)
+                        print(w)
+                        if are_sentences_similar(w, Title):
+                            result = scraper(Title)
+                            heading = Title
+                        else:
+                            result = "Content in Title and the Url doesn't match"
                     else:
-                        result = "Content in Title and the Url doesn't match"
+                        print("extracting headline")
+                        headline = extract_headline(url)
+                        print("extracted headline")
+                        if are_sentences_similar(headline, Title):
+                            result = scraper(Title)
+                            heading = Title
+                        else:
+                            result = "Content in Title and the Url doesn't match"
                 else:
-                    print("extracting headline")
-                    headline = extract_headline(url)
-                    print("extracted headline")
-                    if are_sentences_similar(headline, Title):
-                        result = scraper(Title)
-                        heading = Title
-                    else:
-                        result = "Content in Title and the Url doesn't match"
-    elif url != "" and Title == "" and pic == None:
+                    result = "Invalid Url"
+    elif url != "" and Title == "" and pic == None and is_valid_url(url):
         if "instagram.com" in url:
             if image_extraction(url)==None or are_sentences_similar(image_extraction(url),extract_instagram_captions(url))>0.8 :
                 print("using ig scraper")
@@ -305,6 +328,8 @@ if submit_button:
     elif pic != None:
         heading = text_extraction(pic)
         result = scraper(heading)
+    elif is_valid_url(url)==False:
+        result="Invalid URL"
     else:
         result = "Irrelavant"
     if result == "Fake News":
